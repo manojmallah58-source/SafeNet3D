@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SafeNet 3D - Online Safety</title>
+
+<style>
+
+/* =====================================================
+    GLOBAL SETTINGS
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+:root {
+    --blue: #2563eb;
+    --cyan: #06b6d4;
+    --purple: #7c3aed;
+
+    --dark: #020617;
+    --dark2: #0f172a;
+
+    --text: #e2e8f0;
+
+    --glass: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.15);
+
+    --green: #22c55e;
+    --red: #ef4444;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background:
+        radial-gradient(circle at 20% 20%, #172554, transparent 35%),
+        radial-gradient(circle at 80% 30%, #312e81, transparent 35%),
+        radial-gradient(circle at 50% 90%, #0c4a6e, transparent 35%),
+        #020617;
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: 0.4s;
+}
+
+/* Light Theme Variables */
+body.light-theme {
+    --dark: #f8fafc;
+    --dark2: #f1f5f9;
+    --text: #0f172a;
+    --glass: rgba(0,0,0,0.04);
+    --border: rgba(0,0,0,0.1);
+    background:
+        radial-gradient(circle at 20% 20%, #dbeafe, transparent 35%),
+        radial-gradient(circle at 80% 30%, #ede9fe, transparent 35%),
+        radial-gradient(circle at 50% 90%, #cffafe, transparent 35%),
+        #f8fafc;
+}
+
+body.light-theme nav {
+    background: rgba(248,250,252,0.85);
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+body.light-theme .logo {
+    color: #0f172a;
+    text-shadow: 0 0 15px rgba(37,99,235,0.3);
+}
+
+body.light-theme nav a {
+    color: #334155;
+}
+
+body.light-theme .hero h1, 
+body.light-theme .section-title, 
+body.light-theme .card h3, 
+body.light-theme .step h3, 
+body.light-theme .question h3, 
+body.light-theme .cta h2 {
+    color: #0f172a;
+}
+
+body.light-theme .hero p, 
+body.light-theme .card p, 
+body.light-theme .section-subtitle, 
+body.light-theme .check-item label {
+    color: #334155;
+}
+
+body.light-theme .card, 
+body.light-theme .tip, 
+body.light-theme .step, 
+body.light-theme .checklist, 
+body.light-theme .quiz {
+    background: linear-gradient(145deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+
+/* =====================================================
+    ANIMATED BACKGROUND
+===================================================== */
+
+body::before {
+    content: "";
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37,99,235,0.20), transparent 70%);
+    top: -150px;
+    left: -150px;
+    animation: backgroundMove 8s infinite alternate;
+    pointer-events: none;
+    z-index: -1;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,58,237,0.20), transparent 70%);
+    right: -150px;
+    bottom: -150px;
+    animation: backgroundMove 10s infinite alternate-reverse;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes backgroundMove {
+    from { transform: translate(0,0) scale(1); }
+    to { transform: translate(100px,80px) scale(1.3); }
+}
+
+
+/* =====================================================
+    NAVIGATION
+===================================================== */
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    padding: 15px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(2,6,23,0.75);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 15px #38bdf8;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+nav a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #38bdf8;
+    text-shadow: 0 0 10px #38bdf8;
+}
+
+.theme-btn,
+.menu-btn {
+    border: 1px solid rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    padding: 9px 13px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(37,99,235,0.4);
+}
+
+.menu-btn {
+    display: none;
+}
+
+
+/* =====================================================
+    HERO
+===================================================== */
+
+.hero {
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 70px 8%;
+    perspective: 1200px;
+}
+
+.hero-content {
+    max-width: 650px;
+    animation: heroAppear 1.2s ease;
+}
+
+@keyframes heroAppear {
+    from {
+        opacity: 0;
+        transform: translateX(-100px) rotateY(20deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) rotateY(0);
+    }
+}
+
+.hero h1 {
+    font-size: 55px;
+    line-height: 1.1;
+    margin-bottom: 25px;
+    color: white;
+    text-shadow: 0 5px 30px rgba(0,0,0,0.5);
+}
+
+.hero h1 span {
+    display: block;
+    color: #38bdf8;
+    text-shadow: 0 0 25px rgba(56,189,248,0.6);
+}
+
+.hero p {
+    font-size: 18px;
+    color: #cbd5e1;
+    margin-bottom: 30px;
+}
+
+
+/* =====================================================
+    3D SHIELD
+===================================================== */
+
+.shield-container {
+    width: 330px;
+    height: 330px;
+    perspective: 1000px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shield {
+    width: 220px;
+    height: 260px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 120px;
+    transform-style: preserve-3d;
+    animation: shieldRotate 7s infinite linear;
+    filter: drop-shadow(0 0 35px rgba(37,99,235,0.8));
+}
+
+.shield::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, #38bdf8, #2563eb 45%, #312e81);
+    clip-path: polygon(50% 0%, 92% 18%, 82% 65%, 50% 100%, 18% 65%, 8% 18%);
+    opacity: 0.35;
+    transform: translateZ(-20px);
+}
+
+.shield span {
+    position: relative;
+    z-index: 2;
+    transform: translateZ(45px);
+}
+
+@keyframes shieldRotate {
+    0% { transform: rotateY(-15deg) rotateX(5deg); }
+    50% { transform: rotateY(15deg) rotateX(-5deg); }
+    100% { transform: rotateY(-15deg) rotateX(5deg); }
+}
+
+
+/* =====================================================
+    BUTTONS
+===================================================== */
+
+.btn {
+    display: inline-block;
+    padding: 14px 24px;
+    margin: 5px;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    box-shadow: 0 10px 30px rgba(37,99,235,0.35);
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 15px 40px rgba(56,189,248,0.5);
+}
+
+.btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+
+/* =====================================================
+    SECTIONS
+===================================================== */
+
+section {
+    padding: 90px 8%;
+    position: relative;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 38px;
+    margin-bottom: 15px;
+    color: white;
+    text-shadow: 0 0 20px rgba(56,189,248,0.25);
+}
+
+.section-subtitle {
+    max-width: 750px;
+    margin: 0 auto 50px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+
+/* =====================================================
+    3D CARDS
+===================================================== */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 30px;
+    perspective: 1200px;
+}
+
+.card {
+    padding: 30px;
+    min-height: 200px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    transform-style: preserve-3d;
+    transition: transform 0.5s, box-shadow 0.5s;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(56,189,248,0.15);
+    top: -70px;
+    right: -70px;
+    filter: blur(5px);
+}
+
+.card:hover {
+    transform: translateY(-15px) rotateX(5deg) rotateY(-5deg) translateZ(20px);
+    box-shadow: 0 30px 60px rgba(37,99,235,0.25);
+}
+
+.card-icon {
+    font-size: 45px;
+    margin-bottom: 15px;
+    transform: translateZ(30px);
+    display: inline-block;
+}
+
+.card h3 {
+    color: white;
+    margin-bottom: 10px;
+    font-size: 21px;
+    transform: translateZ(20px);
+}
+
+.card p {
+    color: #cbd5e1;
+}
+
+
+/* =====================================================
+    SAFETY TIPS
+===================================================== */
+
+.tips {
+    background: rgba(15,23,42,0.5);
+}
+
+body.light-theme .tips {
+    background: rgba(226,232,240,0.5);
+}
+
+.tip-list {
+    max-width: 850px;
+    margin: auto;
+}
+
+.tip {
+    margin: 15px 0;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: 0.3s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.tip:hover {
+    transform: translateX(10px) translateZ(10px);
+    border-color: #38bdf8;
+    box-shadow: 0 0 25px rgba(56,189,248,0.15);
+}
+
+
+/* =====================================================
+    3D STEPS
+===================================================== */
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 25px;
+    perspective: 1000px;
+}
+
+.step {
+    padding: 30px;
+    text-align: center;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: 0.4s;
+    transform-style: preserve-3d;
+}
+
+.step:hover {
+    transform: rotateY(10deg) translateY(-10px);
+    box-shadow: 0 20px 40px rgba(37,99,235,0.25);
+}
+
+.step-number {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    box-shadow: 0 10px 30px rgba(37,99,235,0.5);
+    transform: translateZ(30px);
+}
+
+.step h3 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.step p {
+    color: #cbd5e1;
+}
+
+body.light-theme .step p {
+    color: #334155;
+}
+
+
+/* =====================================================
+    CHECKLIST
+===================================================== */
+
+.checklist {
+    max-width: 750px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+}
+
+.check-item {
+    padding: 17px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.check-item label {
+    cursor: pointer;
+    color: #cbd5e1;
+}
+
+body.light-theme .check-item label {
+    color: #334155;
+}
+
+.check-item input {
+    margin-right: 10px;
+    transform: scale(1.3);
+    accent-color: #22c55e;
+}
+
+.progress-container {
+    margin-bottom: 25px;
+}
+
+.progress-bar {
+    height: 14px;
+    width: 100%;
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #06b6d4);
+    box-shadow: 0 0 20px rgba(34,197,94,0.7);
+    transition: 0.5s;
+}
+
+
+/* =====================================================
+    QUIZ
+===================================================== */
+
+.quiz {
+    max-width: 850px;
+    margin: auto;
+    padding: 35px;
+    border-radius: 25px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.3);
+}
+
+.question {
+    margin-bottom: 35px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.question h3 {
+    color: white;
+    margin-bottom: 15px;
+}
+
+.option {
+    display: block;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #cbd5e1;
+}
+
+body.light-theme .option {
+    color: #334155;
+    background: rgba(0,0,0,0.03);
+}
+
+.option:hover {
+    background: rgba(37,99,235,0.2);
+    border-color: #38bdf8;
+    transform: translateX(5px);
+}
+
+.option input {
+    margin-right: 10px;
+    accent-color: #38bdf8;
+}
+
+#quiz-result {
+    margin-top: 25px;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.correct-result {
+    background: rgba(34,197,94,0.15);
+    border: 1px solid #22c55e;
+    color: #86efac;
+}
+
+.good-result {
+    background: rgba(56,189,248,0.15);
+    border: 1px solid #38bdf8;
+    color: #7dd3fc;
+}
+
+.try-result {
+    background: rgba(239,68,68,0.15);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+}
+
+
+/* =====================================================
+    DIGITAL FOOTPRINT
+===================================================== */
+
+.footprint {
+    background: linear-gradient(135deg, rgba(49,46,129,0.6), rgba(30,58,138,0.4));
+}
+
+
+/* =====================================================
+    CTA
+===================================================== */
+
+.cta {
+    text-align: center;
+    padding: 100px 8%;
+    background: radial-gradient(circle, rgba(37,99,235,0.3), transparent 60%);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.cta h2 {
+    font-size: 45px;
+    color: white;
+    margin-bottom: 15px;
+    text-shadow: 0 0 30px rgba(56,189,248,0.5);
+}
+
+.cta p {
+    color: #cbd5e1;
+    margin-bottom: 25px;
+}
+
+
+/* =====================================================
+    FOOTER
+===================================================== */
+
+footer {
+    padding: 35px;
+    text-align: center;
+    background: #01030a;
+    color: #94a3b8;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+footer strong {
+    color: #38bdf8;
+}
+
+
+/* =====================================================
+    MOBILE
+===================================================== */
+
+@media (max-width: 800px) {
+    nav {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    nav ul {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+
+    nav ul.active {
+        display: flex;
+    }
+
+    .menu-btn {
+        display: block;
+    }
+
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        gap: 60px;
+    }
+
+    .hero h1 {
+        font-size: 38px;
+    }
+
+    .shield-container {
+        width: 250px;
+        height: 250px;
+    }
+
+    .shield {
+        font-size: 90px;
+        width: 170px;
+        height: 210px;
+    }
+
+    section {
+        padding: 65px 5%;
+    }
+
+    .section-title {
+        font-size: 30px;
+    }
+
+    .cta h2 {
+        font-size: 32px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =====================================================
+    NAVIGATION
+===================================================== -->
+
+<nav>
+    <div class="logo">
+        🛡️ SafeNet 3D
+    </div>
+
+    <button class="menu-btn" onclick="toggleMenu()">
+        ☰
+    </button>
+
+    <ul id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#risks">Risks</a></li>
+        <li><a href="#social">Safety</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#cyberbullying">Cyberbullying</a></li>
+        <li><a href="#quiz">Quiz</a></li>
+    </ul>
+
+    <button class="theme-btn" onclick="toggleTheme()">
+        🌙
+    </button>
+</nav>
+
+
+<!-- =====================================================
+    HERO
+===================================================== -->
+
+<section class="hero" id="home">
+    <div class="hero-content">
+        <h1>
+            Stay Safe in the
+            <span>Digital World</span>
+        </h1>
+        <p>
+            Welcome to SafeNet 3D — an interactive
+            educational website that teaches children
+            and adolescents how to protect themselves
+            online.
+        </p>
+        <a href="#safety" class="btn">
+            🛡️ Explore Safety
+        </a>
+        <a href="#quiz" class="btn">
+            🧠 Take Quiz
+        </a>
+    </div>
+
+    <div class="shield-container">
+        <div class="shield">
+            <span>🛡️</span>
+        </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+    INTRODUCTION
+===================================================== -->
+
+<section id="safety">
+    <h2 class="section-title">
+        🌐 What is Online Safety?
+    </h2>
+    <p class="section-subtitle">
+        Online safety means using websites,
+        apps, games and social media in a way
+        that protects your privacy, security
+        and well-being.
+    </p>
+
+    <div class="cards">
+        <div class="card">
+            <div class="card-icon">🔒</div>
+            <h3>Privacy</h3>
+            <p>Protect personal information such as passwords, phone numbers, addresses and location.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🛡️</div>
+            <h3>Security</h3>
+            <p>Use strong passwords, secure devices and two-factor authentication.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🧠</div>
+            <h3>Awareness</h3>
+            <p>Learn to recognize scams, phishing messages and fake accounts.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🤝</div>
+            <h3>Responsibility</h3>
+            <p>Treat other people with respect and think before posting online.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+    RISKS
+===================================================== -->
+
+<section id="risks" class="tips">
+    <h2 class="section-title">
+        ⚠️ Common Online Risks
+    </h2>
+    <p class="section-subtitle">
+        Knowing common threats makes it easier
+        to make safe decisions.
+    </p>
+
+    <div class="cards">
+        <div class="card">
+            <div class="card-icon">😟</div>
+            <h3>Cyberbullying</h3>
+            <p>Harmful messages, threats, harassment or humiliation using digital platforms.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🎣</div>
+            <h3>Phishing</h3>
+            <p>Fake messages or websites designed to steal information.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">👤</div>
+            <h3>Fake Profiles</h3>
+            <p>People pretending to be someone else online.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🦠</div>
+            <h3>Malware</h3>
+            <p>Harmful software that can damage devices or steal data.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">📸</div>
+            <h3>Oversharing</h3>
+            <p>Sharing too much personal information online.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">⚠️</div>
+            <h3>Unsafe Content</h3>
+            <p>Content that may be harmful, inappropriate or disturbing.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+    SOCIAL MEDIA
+===================================================== -->
+
+<section id="social">
+    <h2 class="section-title">
+        📱 Social Media Safety
+    </h2>
+    <p class="section-subtitle">
+        Use social media carefully and think
+        before sharing.
+    </p>
+
+    <div class="tip-list">
+        <div class="tip">🔐 Keep your account private where appropriate.</div>
+        <div class="tip">👤 Avoid accepting requests from strangers.</div>
+        <div class="tip">📍 Don't publicly share your live location.</div>
+        <div class="tip">📸 Think before posting photos.</div>
+        <div class="tip">🚫 Block suspicious accounts.</div>
+        <div class="tip">🚨 Report harmful content.</div>
+        <div class="tip">💬 Don't respond to threatening messages.</div>
+        <div class="tip">🧠 Remember that online posts can be copied or shared.</div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+    SECURITY
+===================================================== -->
+
+<section id="security" class="tips">
+    <h2 class="section-title">
+        🔐 Account Security
+    </h2>
+    <p class="section-subtitle">
+        Small security habits can make your
+        online accounts much safer.
+    </p>
+
+    <div class="cards">
+        <div class="card">
+            <div class="card-icon">🔑</div>
+            <h3>Strong Passwords</h3>
+            <p>Use long and unique passwords instead of simple or predictable passwords.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🔐</div>
+            <h3>Two-Factor Authentication</h3>
+            <p>Turn on 2FA when available for an additional layer of account protection.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🚫</div>
+            <h3>Protect OTPs</h3>
+            <p>Never share one-time passwords or verification codes with other people.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🔄</div>
+            <h3>Update Devices</h3>
+            <p>Keep your apps, browsers and operating system updated.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+    PHISHING
+===================================================== -->
+
+<section>
+    <h2 class="section-title">
+        🎣 Stop Phishing & Scams
+    </h2>
+    <p class="section-subtitle">
+        Be careful when a message creates
+        pressure, fear or excitement.
+    </p>
+
+    <div class="cards">
+        <div class="card">
+            <h3>🚨 Unexpected Messages</h3>
+            <p>Be careful with unexpected messages asking for passwords or personal information.</p>
+        </div>
+
+        <div class="card">
+            <h3>💰 Fake Prizes</h3>
+            <p>Be suspicious of unexpected prizes that ask for money or personal data.</p>
+        </div>
+
+        <div class="card">
+            <h3>🔗 Suspicious Links</h3>
+            <p>Don't click unknown links simply because a message tells you to act immediately.</p>
+        </div>
+
+        <div class="card">
+            <h3>⏰ Urgency</h3>
+            <p>Take time to verify unexpected requests before doing anything.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+    CYBERBULLYING
+===================================================== -->
+
+<section id="cyberbullying" class="tips">
+    <h2 class="section-title">
+        🚫 Cyberbullying Safety Plan
+    </h2>
+    <p class="section-subtitle">
+        If something online makes you
+        uncomfortable or unsafe, get help.
+    </p>
+
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>STOP</h3>
+            <p>Stop communicating with the person.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>SAVE</h3>
+            <p>Save relevant messages or screenshots.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>BLOCK</h3>
+            <p>Block the account when appropriate.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">4</div>
+            <h3>REPORT</h3>
+            <p>Report harmful behavior to the platform.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">5</div>
+            <h3>TELL</h3>
+            <p>Tell a trusted adult, teacher or guardian.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+    GAMING
+===================================================== -->
+
+<section>
+    <h2 class="section-title">
+        🎮 Safe Online Gaming
+    </h2>
+    <p class="section-subtitle">
+        Have fun while protecting your
+        information and accounts.
+    </p>
+
+    <div class="cards">
+        <div class="card">
+            <div class="card-icon">👤</div>
+            <h3>Protect Information</h3>
+            <p>Don't share your address, school or private information with strangers.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">⬇️</div>
+            <h3>Safe Downloads</h3>
+            <p>Download games and updates from trusted sources.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">💳</div>
+            <h3>Purchases</h3>
+            <p>Ask a parent or guardian before making purchases.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🚨</div>
+            <h3>Report Abuse</h3>
+            <p>Use blocking and reporting tools when necessary.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+    DIGITAL FOOTPRINT
+===================================================== -->
+
+<section class="footprint">
+    <h2 class="section-title">
+        👣 Digital Footprint
+    </h2>
+    <p class="section-subtitle">
+        Your online activity can leave a
+        digital footprint.
+    </p>
+
+    <div class="cards">
+        <div class="card">
+            <div class="card-icon">📸</div>
+            <h3>Think Before Posting</h3>
+            <p>Consider whether you would be comfortable if the post were seen by other people.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">💬</div>
+            <h3>Be Respectful</h3>
+            <p>Treat people online with the same respect you would offline.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+    CHECKLIST SECTION
+===================================================== -->
+
+<section>
+    <h2 class="section-title">📋 Safety Readiness Checklist</h2>
+    <p class="section-subtitle">Check off the habits you follow to measure your online safety score.</p>
+    
+    <div class="checklist">
+        <div class="progress-container">
+            <span>Progress: <span id="progress-count">0</span>/4 completed</span>
+            <div class="progress-bar">
+                <div class="progress" id="progress-fill"></div>
+            </div>
+        </div>
+        <div class="check-item">
+            <label><input type="checkbox" onchange="updateProgress()"> I use strong, unique passwords for every account.</label>
+        </div>
+        <div class="check-item">
+            <label><input type="checkbox" onchange="updateProgress()"> I never share my OTP or passwords with anyone.</label>
+        </div>
+        <div class="check-item">
+            <label><input type="checkbox" onchange="updateProgress()"> I ignore and block friend requests from complete strangers.</label>
+        </div>
+        <div class="check-item">
+            <label><input type="checkbox" onchange="updateProgress()"> I talk to a trusted adult if something online upsets me.</label>
+        </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+    QUIZ SECTION
+===================================================== -->
+
+<section id="quiz">
+    <h2 class="section-title">🧠 Test Your Knowledge</h2>
+    <p class="section-subtitle">See how much you've learned about staying safe online.</p>
+
+    <div class="quiz">
+        <div class="question">
+            <h3>1. What should you do if you receive a suspicious message offering a free prize?</h3>
+            <label class="option"><input type="radio" name="q1" value="correct"> Ignore it or delete it; it's likely a scam.</label>
+            <label class="option"><input type="radio" name="q1" value="wrong"> Click the link immediately to claim the prize.</label>
+            <label class="option"><input type="radio" name="q1" value="wrong"> Send them your credit card details for verification.</label>
+        </div>
+
+        <div class="question">
+            <h3>2. What is a good habit for creating a strong password?</h3>
+            <label class="option"><input type="radio" name="q2" value="wrong"> Using your birthdate and pet's name.</label>
+            <label class="option"><input type="radio" name="q2" value="wrong"> Using "123456" for convenience.</label>
+            <label class="option"><input type="radio" name="q2" value="correct"> Using a long mix of letters, numbers, and symbols.</label>
+        </div>
+
+        <div class="question">
+            <h3>3. What is the first step in the Cyberbullying Safety Plan?</h3>
+            <label class="option"><input type="radio" name="q3" value="wrong"> Retaliate with mean messages.</label>
+            <label class="option"><input type="radio" name="q3" value="correct"> STOP communicating and save evidence.</label>
+            <label class="option"><input type="radio" name="q3" value="wrong"> Delete all your social media accounts forever.</label>
+        </div>
+
+        <button class="btn" onclick="submitQuiz()">Submit Quiz</button>
+        <div id="quiz-result"></div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+    CTA SECTION
+===================================================== -->
+
+<section class="cta">
+    <h2>Ready to Browse Securely?</h2>
+    <p>Keep these tips in mind every time you log on, play games, or chat with friends!</p>
+    <a href="#home" class="btn">Back to Top 🚀</a>
+</section>
+
+
+<!-- =====================================================
+    FOOTER
+===================================================== -->
+
+<footer>
+    <p>&copy; 2026 <strong>SafeNet 3D</strong>. Empowering the next generation with online safety awareness.</p>
+</footer>
+
+
+<!-- =====================================================
+    JAVASCRIPT SCRIPTS
+===================================================== -->
+
+<script>
+    // Mobile menu toggle
+    function toggleMenu() {
+        const navLinks = document.getElementById('navLinks');
+        navLinks.classList.toggle('active');
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+        document.body.classList.toggle('light-theme');
+        const themeBtn = document.querySelector('.theme-btn');
+        if (document.body.classList.contains('light-theme')) {
+            themeBtn.textContent = '☀️';
+        } else {
+            themeBtn.textContent = '🌙';
+        }
+    }
+
+    // Checklist progress updater
+    function updateProgress() {
+        const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+        let checkedCount = 0;
+        checkboxes.forEach(box => {
+            if (box.checked) checkedCount++;
+        });
+        
+        document.getElementById('progress-count').textContent = checkedCount;
+        const percentage = (checkedCount / checkboxes.length) * 100;
+        document.getElementById('progress-fill').style.width = percentage + '%';
+    }
+
+    // Quiz evaluator
+    function submitQuiz() {
+        const q1 = document.querySelector('input[name="q1"]:checked');
+        const q2 = document.querySelector('input[name="q2"]:checked');
+        const q3 = document.querySelector('input[name="q3"]:checked');
+        const resultDiv = document.getElementById('quiz-result');
+
+        if (!q1 || !q2 || !q3) {
+            resultDiv.className = "try-result";
+            resultDiv.textContent = "⚠️ Please answer all questions before submitting!";
+            return;
+        }
+
+        let score = 0;
+        if (q1.value === 'correct') score++;
+        if (q2.value === 'correct') score++;
+        if (q3.value === 'correct') score++;
+
+        if (score === 3) {
+            resultDiv.className = "correct-result";
+            resultDiv.textContent = "🎉 Excellent! You got 3/3 correct. You're a digital safety expert!";
+        } else if (score === 2) {
+            resultDiv.className = "good-result";
+            resultDiv.textContent = "👍 Good job! You got 2/3 correct. Review the tips to master your safety!";
+        } else {
+            resultDiv.className = "try-result";
+            resultDiv.textContent = "💡 You got " + score + "/3. Review the website's safety sections and try again!";
+        }
+    }
+</script>
+
+</body>
+</html>
+
+<section class="helpline-section" id="helpline">
+  <div class="helpline-content">
+    <div class="helpline-icon">🆘</div>
+    <h2>Need Help? We're Here for You!</h2>
+    <p>
+      Every child deserves safety, respect and care.
+      If you feel unsafe, speak to a trusted adult
+      or contact an official helpline.
+    </p>
+
+    <div class="helpline-cards">
+      <div class="helpline-card">
+        <span>🧒</span>
+        <h3>Child Helpline</h3>
+        <p>For children needing care or protection</p>
+        <a href="tel:1098" class="call-button">
+          📞 Call 1098
+        </a>
+      </div>
+
+      <div class="helpline-card emergency">
+        <span>🚨</span>
+        <h3>Emergency Help</h3>
+        <p>For immediate danger or emergencies</p>
+        <a href="tel:112" class="call-button">
+          📞 Call 112
+        </a>
+      </div>
+
+      <div class="helpline-card">
+        <span>💻</span>
+        <h3>Cybercrime Reporting</h3>
+        <p>Report online abuse and cybercrime</p>
+        <a href="https://cybercrime.gov.in/"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="call-button">
+          Visit Official Portal ↗
+        </a>
+      </div>
+    </div>
+
+    <p class="helpline-note">
+      You are not alone. Tell a trusted adult if
+      someone threatens, bullies or hurts you.
+    </p>
+
+    <small>
+      Helpline information for India.
+      Phone links work on compatible devices.
+    </small>
+  </div>
+</section>
+
+<style>
+.helpline-section {
+  padding: 65px 7%;
+  color: #f5f8ff;
+  text-align: center;
+  background: linear-gradient(135deg, #10162e, #193f60);
+  font-family: Arial, sans-serif;
+}
+
+.helpline-content {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.helpline-icon {
+  font-size: 55px;
+}
+
+.helpline-section h2 {
+  font-size: clamp(28px, 5vw, 42px);
+  margin: 15px 0;
+}
+
+.helpline-section p {
+  color: #d5e3f7;
+  line-height: 1.7;
+}
+
+.helpline-cards {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
+  margin-top: 35px;
+  perspective: 1000px;
+}
+
+.helpline-card {
+  padding: 25px 18px;
+  background: #ffffff0d;
+  border: 1px solid #5d7da3;
+  border-radius: 22px;
+  transition: transform .3s, box-shadow .3s;
+}
+
+.helpline-card:hover {
+  transform: translateY(-8px) rotateY(-3deg);
+  box-shadow: 0 15px 35px #00d9ff25;
+}
+
+.helpline-card > span {
+  font-size: 40px;
+}
+
+.helpline-card h3 {
+  color: #7af6e5;
+}
+
+.call-button {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 12px 18px;
+  color: #07182a;
+  background: #79f4e2;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 12px;
+}
+
+.call-button:hover {
+  background: white;
+}
+
+.helpline-note {
+  margin-top: 35px;
+}
+
+.helpline-section small {
+  display: block;
+  margin-top: 18px;
+  color: #bdcce2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .helpline-card {
+    transition: none;
+  }
+
+  .helpline-card:hover {
+    transform: none;
+  }
+}
+</style>
